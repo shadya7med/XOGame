@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f2f4f1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" hgap="40.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="110.0" prefWidth="600.0" prefWrapLength="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" prefHeight="32.0" prefWidth="84.0" text="XO" textAlignment="JUSTIFY" textFill="#2a3646">
+               <font>
+                  <Font name="Arial Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="31.0" prefWidth="247.0" text="Snake and Ladder" textFill="#2a3646">
+               <font>
+                  <Font name="Arial Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="71.0" text="Checkers" textAlignment="JUSTIFY" textFill="#2a3646">
+               <font>
+                  <Font name="Arial Bold" size="15.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets />
+               </FlowPane.margin></Label>
+         </children>
+      </FlowPane>
+   </bottom>
+   <center>
+      <FlowPane prefHeight="222.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <ImageView id="xo_game" fitHeight="153.0" fitWidth="157.0" layoutX="28.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" fx:id="xo_game">
+                     <image>
+                        <Image url="@../resources/xo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="120.0" fitWidth="197.0" layoutX="22.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/snake.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="137.0" fitWidth="131.0" layoutX="35.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/checkers.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </children>
+      </FlowPane>
+   </center>
+   <top>
+      <Label prefHeight="57.0" prefWidth="269.0" text="Entertainment Games" textFill="#2a3646" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="30.0" top="40.0" />
+         </BorderPane.margin>
+         <font>
+            <Font name="Arial Bold" size="26.0" />
+         </font>
+      </Label>
+   </top>
+</BorderPane>
