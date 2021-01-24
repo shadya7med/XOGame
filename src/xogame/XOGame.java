@@ -75,7 +75,8 @@ public class XOGame extends Application {
     private Thread serverTh,clientTh,serverInitTh,clientInitTh;
     private String appNetworkMode ;
     private String clientInput,serverInput ;
-    private PauseTransition[] delay ; 
+    private PauseTransition[] delay ;
+    private String mode ;
     private int delayInc ;
     Timeline timeline ;
     //static boolean replay;
@@ -104,6 +105,7 @@ public class XOGame extends Application {
         recorded =false ;
         online = false ;
         int replayId = 1;
+        mode = "None";
         delay = new PauseTransition[9];
         isClicked = true ;
         homeScene = new Scene(h, 600, 520);
@@ -233,11 +235,13 @@ public class XOGame extends Application {
                 g.label2.setText("Robot");
                  g.label2.setLayoutX(470);
             
-            //Create 2-Player Offline Game
-            glc.newGame(false);
+        //Create 2-Player Offline Game
+        glc.newGame(false);
             //
-           // replay = false;
-            
+        // replay = false;
+         
+        //set mode
+        mode = "SinglePlayer";
             
         });
        o.btn_online.setOnAction((ActionEvent e) -> {
@@ -275,8 +279,10 @@ public class XOGame extends Application {
             glc.newGame(true);
             //
             //replay = false;
-
+        //set mode
+        mode = "TwoPlayerOffline";
         });
+        
         o.replay.setOnAction(e ->{
             //unlock replay mode
             isReplay = true ;
@@ -311,7 +317,8 @@ public class XOGame extends Application {
             }
             //add andimation for result
             System.out.println("Ok");
-
+            //set mode
+            mode = "Replay";
         });
         hg.btn_host.setOnAction(e->{
             appNetworkMode = "host";
@@ -348,6 +355,8 @@ public class XOGame extends Application {
                         g.label2.setText("Guest");
                         g.label2.setLayoutX(475);
                     });
+                    //set mode
+                    mode = "TwoPlayerHost";
                     //start reading thread for server
                     serverTh = new Thread()
                     {
@@ -433,6 +442,9 @@ public class XOGame extends Application {
                        g.label2.setText("Guest");
        
                     }});
+                    //set mode
+                    mode = "TwoPlayerGuest";
+                    
                     hideAllButtons();
                     //start reading thread for client
                     clientTh = new Thread()
@@ -485,6 +497,38 @@ public class XOGame extends Application {
             
             
         });
+        //-------------------new Buttons Actions--------------------//
+        //X Wins
+        x_win.btn_new.setOnAction(e->{
+           String temp = mode ;
+           terminateCurrentGame();
+           switch(temp)
+           {
+               case "SinglePlayer":o.btn_oneplayer.fire();break;
+               case "TwoPlayerOffline":o.btn_offline.fire();break;
+               case "TwoPlayerHost":hg.btn_host.fire();break;
+               case "TwoPlayerGuest":hg.btn_guest.fire();break;
+               case "Replay":o.replay.fire();break;    
+                   
+           }
+           
+        });
+        //O Wins
+        w.btn_new.setOnAction(e->{
+            String temp = mode ;
+           terminateCurrentGame();
+           switch(temp)
+           {
+               case "SinglePlayer":o.btn_oneplayer.fire();break;
+               case "TwoPlayerOffline":o.btn_offline.fire();break;
+               case "TwoPlayerHost":hg.btn_host.fire();break;
+               case "TwoPlayerGuest":hg.btn_guest.fire();break;
+               case "Replay":o.replay.fire();break;    
+                   
+           }
+
+        });
+        //TIE
         //-------------------back Buttons Actions--------------------//
         o.btn_back.setOnAction((ActionEvent e) -> {
             
