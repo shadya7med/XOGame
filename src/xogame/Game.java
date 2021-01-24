@@ -2,6 +2,7 @@ package xogame;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -9,6 +10,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Font;
 
 public class Game extends AnchorPane {
 
@@ -34,6 +36,16 @@ public class Game extends AnchorPane {
     protected final Button btn_back;
     protected ImageView x_img ;
     protected ImageView o_img ;
+     protected final Label label;
+    protected final Label label0;
+    protected final ImageView imageView0;
+    protected final Label label1;
+    protected final ImageView imageView1;
+     protected final ImageView imageView2;
+    protected final ImageView imageView3;
+    protected final Label label2;
+
+
     public Game() {
 
         anchorPane = new AnchorPane();
@@ -56,6 +68,14 @@ public class Game extends AnchorPane {
         btn12 = new Button();
         btn22 = new Button();
         btn_back = new Button();
+          label = new Label();
+        label0 = new Label();
+        imageView0 = new ImageView();
+        label1 = new Label();
+        imageView1 = new ImageView();
+        imageView2 = new ImageView();
+        imageView3 = new ImageView();
+        label2 = new Label();
 
         setId("AnchorPane");
         setPrefHeight(400.0);
@@ -65,12 +85,12 @@ public class Game extends AnchorPane {
         anchorPane.setMaxWidth(USE_PREF_SIZE);
         anchorPane.setMinHeight(USE_PREF_SIZE);
         anchorPane.setMinWidth(USE_PREF_SIZE);
-        anchorPane.setPrefHeight(524.0);
-        anchorPane.setPrefWidth(609.0);
+        anchorPane.setPrefHeight(590.0);
+        anchorPane.setPrefWidth(660.0);
         anchorPane.setStyle("-fx-background-color: #f2f4f1;");
 
-        pane.setLayoutX(101.0);
-        pane.setLayoutY(30.0);
+        pane.setLayoutX(85.0);
+        pane.setLayoutY(40.0);
 
         imageView.setFitHeight(519.0);
         imageView.setFitWidth(449.0);
@@ -79,7 +99,7 @@ public class Game extends AnchorPane {
         //imageView.setImage(new Image(getClass().getResource("../resources/grid.png").toExternalForm()));
 
         gridPane.setPrefHeight(449.0);
-        gridPane.setPrefWidth(449.0);
+        gridPane.setPrefWidth(442.0);
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMinWidth(10.0);
@@ -189,6 +209,59 @@ public class Game extends AnchorPane {
         btn_back.setPrefWidth(72.0);
         btn_back.setStyle("-fx-background-image: url('resources/back.png'); -fx-background-size: 100% 100%; -fx-border-image-repeat: no-repeat; -fx-background-radius: 15px;-fx-focus-color: transparent;");
 
+         label.setLayoutX(28.0);
+        label.setLayoutY(1.0);
+
+        label0.setLayoutX(290.0);
+        label0.setLayoutY(4.0);
+        label0.setPrefHeight(33.0);
+        label0.setPrefWidth(49.0);
+        label0.setText(" VS");
+        label0.setTextAlignment(javafx.scene.text.TextAlignment.RIGHT);
+        label0.setTextFill(javafx.scene.paint.Color.valueOf("#e11b1b"));
+        label0.setFont(new Font("System Bold", 24.0));
+
+        imageView0.setFitHeight(43.0);
+        imageView0.setFitWidth(72.0);
+        imageView0.setLayoutX(14.0);
+        imageView0.setLayoutY(15.0);
+        imageView0.setPickOnBounds(true);
+        imageView0.setPreserveRatio(true);
+
+        label1.setLayoutX(97.0);
+        label1.setLayoutY(4.0);
+        label1.setPrefHeight(43.0);
+        label1.setPrefWidth(87.0);
+        label1.setText("Player 1 ");
+        label1.setTextFill(javafx.scene.paint.Color.valueOf("#18baf0"));
+        label1.setFont(new Font("System Bold", 18.0));
+
+        imageView1.setFitHeight(43.0);
+        imageView1.setFitWidth(49.0);
+        imageView1.setLayoutX(37.0);
+        imageView1.setLayoutY(4.0);
+        imageView1.setImage(new Image(getClass().getResource("../resources/x.png").toExternalForm()));
+        
+        imageView2.setFitHeight(43.0);
+        imageView2.setFitWidth(72.0);
+        imageView2.setLayoutX(550.0);
+        imageView2.setLayoutY(4.0);
+        imageView2.setPickOnBounds(true);
+        imageView2.setPreserveRatio(true);
+
+        imageView3.setFitHeight(43.0);
+        imageView3.setFitWidth(49.0);
+        imageView3.setLayoutX(530.0);
+        imageView3.setLayoutY(4.0);
+        imageView3.setImage(new Image(getClass().getResource("../resources/o.png").toExternalForm()));
+ label2.setLayoutX(450.0);
+        label2.setLayoutY(8.0);
+        label2.setPrefHeight(35.0);
+        label2.setPrefWidth(72.0);
+        label2.setText("Player 2");
+        label2.setTextFill(javafx.scene.paint.Color.valueOf("#1aab24"));
+        label2.setFont(new Font("System Bold", 18.0));
+        
         pane.getChildren().add(imageView);
         gridPane.getColumnConstraints().add(columnConstraints);
         gridPane.getColumnConstraints().add(columnConstraints0);
@@ -208,6 +281,14 @@ public class Game extends AnchorPane {
         pane.getChildren().add(gridPane);
         anchorPane.getChildren().add(pane);
         anchorPane.getChildren().add(btn_back);
+         anchorPane.getChildren().add(label);
+        anchorPane.getChildren().add(label0);
+        anchorPane.getChildren().add(imageView0);
+        anchorPane.getChildren().add(label1);
+        anchorPane.getChildren().add(imageView1);
+          anchorPane.getChildren().add(imageView2);
+        anchorPane.getChildren().add(imageView3);
+        anchorPane.getChildren().add(label2);
         getChildren().add(anchorPane);
         
 

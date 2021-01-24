@@ -248,17 +248,18 @@ public class ConnectionHandler {
     
     public void stopServer()
     {
-        if(serverInitTh != null)
+        /*if(serverInitTh != null)
         {
             serverInitTh.stop();
         }
         if(serverTh != null)
         {
             serverTh.stop();
-        }
+        }*/
         if(dos != null){
             dos.println("close");
             dos.close();
+            System.out.println("server sent close");
         }
         try{
         if(dis != null)
@@ -276,22 +277,24 @@ public class ConnectionHandler {
         {
             closeEx.printStackTrace();
         }
+        System.out.println("serverClient done");
         
     }
     
     
     public void stopClient(){
-            if(clientInitTh != null)
+            /*if(clientInitTh != null)
             {
                 clientInitTh.stop();
             }
             if(clientTh != null)
             {
                 clientTh.stop();
-            }
+            }*/
             if(dos != null){
                 dos.println("close");
                 dos.close();
+                System.out.println("client sent close");
             }
         try {
             if(dis != null)
@@ -306,6 +309,7 @@ public class ConnectionHandler {
         {
             closeEx.printStackTrace();
         }
+        System.out.println("stopClient done");
     }
     public boolean getServerInit()
     {

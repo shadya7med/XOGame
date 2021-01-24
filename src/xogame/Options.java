@@ -1,6 +1,12 @@
 package xogame;
 
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.effect.Blend;
@@ -11,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class Options extends AnchorPane {
 
@@ -28,6 +35,7 @@ public class Options extends AnchorPane {
     protected final FlowPane flowPane0;
     protected final Pane pane0;
     protected final Button btn_back;
+     protected final Home h;
 
     public Options() {
 
@@ -45,7 +53,7 @@ public class Options extends AnchorPane {
         flowPane0 = new FlowPane();
         pane0 = new Pane();
         btn_back = new Button();
-
+        h = new Home();
         setId("AnchorPane");
         setPrefHeight(400.0);
         setPrefWidth(600.0);
@@ -151,5 +159,37 @@ public class Options extends AnchorPane {
         flowPane0.getChildren().add(pane0);
         getChildren().add(borderPane);
 
+    }
+
+    /**
+     * *****************************animation***************************
+     */
+    void scaleButton(EventHandler<ActionEvent> value, Node n) {
+        ParallelTransition parallelTransition;
+        RotateTransition rotateTransition;
+        rotateTransition = new RotateTransition(Duration.millis(100), n);
+        rotateTransition.setByAngle(3);
+
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(100), n);
+        scaleTransition.setByX(0.01);
+        parallelTransition = new ParallelTransition(rotateTransition, scaleTransition);
+
+        h.med.play();
+        parallelTransition.setOnFinished(value);
+        parallelTransition.play();
+    }
+
+    void backAnim(EventHandler<ActionEvent> value, Node n) {
+        ParallelTransition parallelTransition;
+        RotateTransition rotateTransition;
+        rotateTransition = new RotateTransition(Duration.millis(100), n);
+        rotateTransition.setByAngle(-3);
+        rotateTransition.setAutoReverse(false);
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(100), n);
+        scaleTransition.setByX(0.01);
+        parallelTransition = new ParallelTransition(rotateTransition, scaleTransition);
+        parallelTransition.setAutoReverse(false);
+        parallelTransition.setOnFinished(value);
+        parallelTransition.play();
     }
 }

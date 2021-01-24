@@ -5,22 +5,44 @@
  */
 package xogame;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.xml.ws.handler.MessageContext;
+import static xogame.SnakeLogic.DOWN;
+import static xogame.SnakeLogic.HEIGHT;
+import static xogame.SnakeLogic.LEFT;
+import static xogame.SnakeLogic.RIGHT;
+import static xogame.SnakeLogic.ROWS;
+import static xogame.SnakeLogic.UP;
+import static xogame.SnakeLogic.WIDTH;
 
 /**
  *
@@ -28,7 +50,7 @@ import javafx.util.Duration;
  */
 public class XOGame extends Application {
     
-    Scene homeScene, optionsScene, gameScene, hostGuestScene;
+    Scene homeScene, optionsScene, gameScene, hostGuestScene, snakeScene,gameoverSnakeScene, xScene, winnerScene;
     Stage window;
     DbHandler dbHandler ; 
     GameLogic glc ;
@@ -36,18 +58,26 @@ public class XOGame extends Application {
     Options o ;
     Home h ;
     HostGuest hg;
+    SnakeLogic s;
+    GameOverSnake gameOver_snake;
+    Canvas canvas ;
+    Group root;
+       XWinner x_win;
+       Winner w;
     private int gameId; 
     private boolean recorded ;
     private boolean online ;
     private boolean isReplay;
-    private boolean isClicked ;
-    private int col = 0;
+    private boolean isClicked ; 
     private int row = 0;
     private ArrayList<String> gameTurns ;        
     private ConnectionHandler conHandler ;
     private Thread serverTh,clientTh,serverInitTh,clientInitTh;
     private String appNetworkMode ;
     private String clientInput,serverInput ;
+    private PauseTransition[] delay ; 
+    private int delayInc ;
+    Timeline timeline ;
     //static boolean replay;
     @Override
     public void init(){
@@ -57,7 +87,7 @@ public class XOGame extends Application {
         glc = new GameLogic(); 
         conHandler = new ConnectionHandler();
         
-        
+        s=new SnakeLogic();
     }
     
     @Override
@@ -68,14 +98,29 @@ public class XOGame extends Application {
         g=new Game();
         h=new Home();
         hg=new HostGuest();
+        x_win = new XWinner();
+        w = new Winner();
+        gameOver_snake=new GameOverSnake();
         recorded =false ;
         online = false ;
-        int replayId = 3;
+        int replayId = 1;
+        delay = new PauseTransition[9];
         isClicked = true ;
         homeScene = new Scene(h, 600, 520);
         optionsScene = new Scene(o, 600, 520);
         gameScene = new Scene(g, 600, 520);
         hostGuestScene = new Scene(hg,600,520);
+         xScene = new Scene(x_win, 600, 520);
+          winnerScene = new Scene(w, 600, 520);
+        gameoverSnakeScene = new Scene(gameOver_snake,600,540);
+        
+        //snakeScene
+        root = new Group();
+        canvas = new Canvas(WIDTH,HEIGHT);
+        root.getChildren().add(canvas);
+        snakeScene = new Scene(root);
+        
+        
         //------------- Setting Buttons Actions------------------//
        
         g.btn00.setOnAction((ActionEvent e)->{
@@ -130,12 +175,34 @@ public class XOGame extends Application {
             turnPlay(2, 1);            
         });
         
+        //-------------------opening snake game--------------------//
+        h.imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                h.rotateImage((k) -> {
+                    h.med.play();
+                    window.setScene(snakeScene);
+                    
+                },h.imageView);
+                playSnakeScene();
+            }
+        });
+          h.xo_game.setOnMouseMoved((e) -> homeScene.setCursor(Cursor.HAND));
         //-------------------opening xo game--------------------//
-        h.xo_game.setOnMousePressed((e)
-                -> {
+        h.xo_game.setOnMousePressed((MouseEvent e) -> {
+            /**
+             * *****************************animation***************************
+             */
+            /*h.rotateImage((k) -> {
+                h.med.play();
+                window.setScene(optionsScene);
+                
+            },h.xo_game);*/
             window.setScene(optionsScene);
 
         });
+        
+            h.xo_game.setOnMouseMoved((e) -> homeScene.setCursor(Cursor.HAND));
         o.checkBox.setOnAction((e)->{
             //isRecorded
             recorded = o.checkBox.isSelected();
@@ -153,7 +220,19 @@ public class XOGame extends Application {
                 dbHandler.startInsert();
             }
             //load Grid image
-            window.setScene(gameScene);
+
+        /* o.scaleButton((k) -> {
+
+                window.setScene(gameScene);
+
+            }, o.btn_oneplayer);*/
+        window.setScene(gameScene);
+//               
+                  g.label1.setText("Player");
+                
+                g.label2.setText("Robot");
+                 g.label2.setLayoutX(470);
+            
             //Create 2-Player Offline Game
             glc.newGame(false);
             //
@@ -161,7 +240,14 @@ public class XOGame extends Application {
             
             
         });
-        o.btn_online.setOnAction((ActionEvent e) -> {  
+       o.btn_online.setOnAction((ActionEvent e) -> {
+            /**
+             * *****************************animation***************************
+             */
+            /*o.scaleButton((k) -> {
+                window.setScene(hostGuestScene);
+                
+            }, o.btn_online);*/
             window.setScene(hostGuestScene);
         });
         
@@ -178,7 +264,13 @@ public class XOGame extends Application {
                 dbHandler.startInsert();
             }
             //load Grid image
-            window.setScene(gameScene);
+            /*o.scaleButton((k) -> {
+                window.setScene(gameScene);
+
+            }, o.btn_offline);*/
+            window.setScene(gameScene); 
+            
+            
             //Create 2-Player Offline Game
             glc.newGame(true);
             //
@@ -193,7 +285,12 @@ public class XOGame extends Application {
             //terminate current Game
             //terminateCurrentGame();
             //load Grid image
-            window.setScene(gameScene);            
+            /*o.scaleButton((k) -> {
+                window.setScene(gameScene);
+
+            }, o.replay);*/ 
+            window.setScene(gameScene);
+            
             //Create new Replay
             glc.newReplay(true);
             //
@@ -203,10 +300,14 @@ public class XOGame extends Application {
             //make  the buttons invisible
             hideAllButtons();
             //play the selected game
+            delayInc = 1 ;
+            //play the selected game
             for(String move:gameTurns)
             {
-                fireButton(move.substring(1));
-                sleep(1);
+                delay[delayInc  - 1] = new PauseTransition(Duration.seconds(delayInc));
+                delay[delayInc  - 1].setOnFinished( event -> fireButton(move.substring(1)) );
+                delay[delayInc  - 1].play();
+                delayInc ++ ;
             }
             //add andimation for result
             System.out.println("Ok");
@@ -234,12 +335,19 @@ public class XOGame extends Application {
                     //Create 2-Player Game
                     glc.newGame(true);
                     
-                    Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                    //load Grid image
-                    window.setScene(gameScene);
-                    }});
+                    Platform.runLater(() -> {
+                        //load Grid image
+                        /*o.scaleButton((k) -> {
+                            window.setScene(gameScene);
+                            
+                        }, hg.btn_host);*/
+                        window.setScene(gameScene);
+                        
+                        g.label1.setText("Host");
+                        
+                        g.label2.setText("Guest");
+                        g.label2.setLayoutX(475);
+                    });
                     //start reading thread for server
                     serverTh = new Thread()
                     {
@@ -255,8 +363,12 @@ public class XOGame extends Application {
                         if(serverInput.equals("close"))
                          {
                          System.out.println("Client closed");
+                         Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
                          //fire back_btn
                          g.btn_back.fire();
+                         }});
                          }else{
                          Platform.runLater(new Runnable() {
                          @Override
@@ -309,8 +421,19 @@ public class XOGame extends Application {
                     @Override
                     public void run() {
                     //load Grid image
-                    window.setScene(gameScene);
+                     /*o.scaleButton((k) -> 
+                            {
+                                window.setScene(gameScene);
+
+                            }, hg.btn_guest);*/
+                     
+                       window.setScene(gameScene);
+                       
+                       g.label1.setText("Host");
+                       g.label2.setText("Guest");
+       
                     }});
+                    hideAllButtons();
                     //start reading thread for client
                     clientTh = new Thread()
                     {
@@ -321,12 +444,17 @@ public class XOGame extends Application {
                     {
                         
                         clientInput = conHandler.readClientBlocking();
+                        //System.out.println(clientInput);
                         if(clientInput!=null){
                         if(clientInput.equals("close"))
                          {
                          System.out.println("Server closed");
+                         Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
                          //fire back_btn
                          g.btn_back.fire();
+                         }});
                          }else{
                             
                             Platform.runLater(new Runnable() {
@@ -362,9 +490,70 @@ public class XOGame extends Application {
             
             window.setScene(homeScene);
         });
+         x_win.btn_back.setOnAction((ActionEvent e) -> {
+            w.med.stop();
+            /*if (online) {
+                switch (appNetworkMode) {
+                    case "host":
+                        conHandler.stopServer();
+                        if (serverInitTh != null) {
+                            serverInitTh.stop();
+                        }
+                        if (serverTh != null) {
+                            serverTh.stop();
+                        }
+                        break;
+                    case "guest":
+                        conHandler.stopClient();
+                        if (clientInitTh != null) {
+                            clientInitTh.stop();
+                        }
+                        if (clientTh != null) {
+                            clientTh.stop();
+                        }
+                        break;
+                }
+            }*/
+            //terminate current Game
+            terminateCurrentGame();
+            window.setScene(optionsScene);
+             System.out.println("X win back pressed");
+            w.med.stop();
+
+        });
+        w.btn_back.setOnAction((ActionEvent e) -> {
+            w.med.stop();
+            /*if (online) {
+                switch (appNetworkMode) {
+                    case "host":
+                        conHandler.stopServer();
+                        if (serverInitTh != null) {
+                            serverInitTh.stop();
+                        }
+                        if (serverTh != null) {
+                            serverTh.stop();
+                        }
+                        break;
+                    case "guest":
+                        conHandler.stopClient();
+                        if (clientInitTh != null) {
+                            clientInitTh.stop();
+                        }
+                        if (clientTh != null) {
+                            clientTh.stop();
+                        }
+                        break;
+                }
+            }*/
+            //terminate current Game
+            terminateCurrentGame();
+
+            window.setScene(optionsScene);
+
+        });
         g.btn_back.setOnAction((ActionEvent e) -> {
             //
-            if(online)
+            /*if(online)
             {
                 switch(appNetworkMode)
                 {
@@ -391,69 +580,64 @@ public class XOGame extends Application {
                     }
                     break;
                 }
-            }   
+            }*/
             //terminate current Game
             terminateCurrentGame();
             //
             window.setScene(optionsScene);
+            System.out.println("game back button pressed");
         });
         hg.btn_back.setOnAction(e ->{
-            if(online)
-             {
-                switch(appNetworkMode)
+            if(serverInitTh != null)
                 {
-                case "host":
-                    conHandler.stopServer();
-                    if(serverInitTh != null)
-                    {
-                    serverInitTh.stop();
-                    }
-                    if(serverTh != null)
-                    {
-                     serverTh.stop();       
-                    }
-                    break;
-                case "guest":
-                    conHandler.stopClient();
-                    if(clientInitTh != null)
-                    {
-                    clientInitTh.stop();
-                    }
-                    if(clientTh != null)
-                    {
-                     clientTh.stop();       
-                    }
-                    break;
+                System.out.println("server intit stopping");
+                serverInitTh.stop();
+                System.out.println("server intit stopped");
                 }
-            }
+                if(serverTh != null)
+                {
+                System.out.println("client read stopping");
+                serverTh.stop();  
+                System.out.println("client read stopped");
+                }
+                    
+            if(clientInitTh != null)
+                {
+                clientInitTh.stop();
+                }
+                if(clientTh != null)
+                {
+                clientTh.stop();       
+                }
+          
+            conHandler.stopServer();
+               
+            conHandler.stopClient();
+                
             window.setScene(optionsScene);
         });
+        //-------------------Snake game btn actions --------------------//
+        gameOver_snake.btn_back.setOnAction(e ->{
+            
+            window.setScene(homeScene);
+        });
+        
+        gameOver_snake.btn_newGame.setOnAction(e ->{
+            
+            s.stopGame();
+            window.setScene(snakeScene);
+            playSnakeScene();
+        });
+        
         //-------------------show Home Screen--------------------//
         window.setScene(homeScene);
         window.setResizable(false);
         
         window.show();
-        /*if(replay)
-        {
-            //get game Turns
-            gameTurns = dbHandler.getGameMoves(replayId);
-            //play the selected game
-            for(int index=0;index < (gameTurns.size() - 1);index ++)
-            {
-                col = Integer.parseInt(gameTurns.get(index).substring(1,2));
-                row = Integer.parseInt(gameTurns.get(index).substring(2));;
-                turnPlay(col, row);
-                try{
-                Thread.sleep(1000);
-                }catch(InterruptedException waitEx)
-                {
-                    waitEx.printStackTrace();
-                }
-            }
-        }*/
+       
     
     }
-
+    
     /**
      * @param args the command line arguments
      */
@@ -462,31 +646,36 @@ public class XOGame extends Application {
     }
     @Override
     public void stop(){
+        if(serverInitTh != null)
+            {
+            serverInitTh.stop();
+            System.out.println("server stopped 1");
+            }
+        if(serverTh != null)
+            {
+            serverTh.stop();
+            System.out.println("server stopped 2");
+            }
+                    
+        if(clientInitTh != null)
+            {
+            clientInitTh.stop();
+            }
+        if(clientTh != null)
+            {
+            clientTh.stop();       
+            }
         if(online)
         {
             switch(appNetworkMode)
             {
                 case "host":
                     conHandler.stopServer();
-                    if(serverInitTh != null)
-                    {
-                    serverInitTh.stop();
-                    }
-                    if(serverTh != null)
-                    {
-                     serverTh.stop();       
-                    }
+                    
                     break;
                 case "guest":
                     conHandler.stopClient();
-                    if(clientInitTh != null)
-                    {
-                    clientInitTh.stop();
-                    }
-                    if(clientTh != null)
-                    {
-                     clientTh.stop();       
-                    }
+                   
                     break;
             }
         }   
@@ -494,6 +683,7 @@ public class XOGame extends Application {
         {
             dbHandler.stopCon();
         }
+        System.out.println("stop called");
     }
     
     public void turnPlay(int i,int j)
@@ -509,6 +699,7 @@ public class XOGame extends Application {
             switch(curTurn)
             {
                 case 'x':
+                 
                     //x is always Player 1
                     playerName = "Player 1";
                     move = "x" ;
@@ -554,9 +745,25 @@ public class XOGame extends Application {
                 //animation
                 
                 //go back to options
-            System.out.println("Game Ended\n"+curTurn +"Won !!");
+                switch (curTurn) {
+                    case 'x':
+                        w.med.setOnEndOfMedia(() -> {
+                            w.med.seek(Duration.ZERO);
+                        });
+                        w.med.play();
+                        window.setScene(xScene);
+                        break;
+                    case 'o':
+                        w.med.setOnEndOfMedia(() -> {
+                            w.med.seek(Duration.ZERO);
+                        });
+                        w.med.play();
+                        window.setScene(winnerScene);
+                        break;
+                }
+           // System.out.println("Game Ended\n"+curTurn +"Won !!");
             if(!isReplay){
-            window.setScene(homeScene);
+          //  window.setScene(homeScene);
             gameEnd =true;
             }
             }
@@ -569,7 +776,7 @@ public class XOGame extends Application {
             //end the turn
             if(gameEnd){
                 //end the Current Game
-                terminateCurrentGame();
+                //terminateCurrentGame();
                 return ;}
             //let computer take turn or switch turns for next player
             String nextTurn = glc.nextTurn();
@@ -594,11 +801,26 @@ public class XOGame extends Application {
                     case 'o':result="O";break;
                 }*/
                 //animation
-                
+                switch (curTurn) {
+                    case 'x':
+                        w.med.setOnEndOfMedia(() -> {
+                            w.med.seek(Duration.ZERO);
+                        });
+                        w.med.play();
+                        window.setScene(xScene);
+                        break;
+                    case 'o':
+                        w.med.setOnEndOfMedia(() -> {
+                            w.med.seek(Duration.ZERO);
+                        });
+                        w.med.play();
+                        window.setScene(winnerScene);
+                        break;
+                }
                 //go back to options
-                System.out.println("Game Ended\n"+glc.getTurn() +"Won !!");
+              //  System.out.println("Game Ended\n"+glc.getTurn() +"Won !!");
                 if(!isReplay){
-                window.setScene(homeScene);
+            //    window.setScene(homeScene);
                 gameEnd = true ;
                 }
                 }
@@ -609,7 +831,7 @@ public class XOGame extends Application {
                 }
                 if(gameEnd)
                 {
-                    terminateCurrentGame();
+                    //terminateCurrentGame();
                     return ;
                 } 
             }
@@ -637,26 +859,40 @@ public class XOGame extends Application {
                     break;
                 case "guest":
                     conHandler.stopClient();
+                    if(clientTh != null)
+                    {
+                      System.out.println("clientStopping");
+                     clientTh.stop();   
+                     System.out.println("clientStopped");
+                    }
                     if(clientInitTh != null)
                     {
                     clientInitTh.stop();
+                        System.out.println("clientInitStopped");
                     }
-                    if(clientTh != null)
-                    {
-                     clientTh.stop();       
-                    }
+                    
                     break;
             }
         }  
-        
-        
-        try{
-            start(window);
-            }catch(Exception twoplayerStart)
+        if(isReplay){
+            for(PauseTransition currentAnimation:delay)
             {
-                twoplayerStart.printStackTrace();
+                if(currentAnimation != null)
+                {
+                    currentAnimation.stop();
+                }
             }
-        //glc.newGame(false);
+        }
+        System.out.println("inTer");
+        try{
+            System.out.println("inTer before Start");
+            start(window);
+            System.out.println("inTer after Start");
+            }catch(Exception restart)
+            {
+                restart.printStackTrace();
+            }
+        glc.newGame(false);
         if(recorded)
         {
             //stop insert statement
@@ -665,6 +901,7 @@ public class XOGame extends Application {
                 dbHandler.stopInsert();
             }
         }
+        System.out.println("terminate done");
     }
     private void hideAllButtons()
     {
@@ -705,10 +942,93 @@ public class XOGame extends Application {
                     case "22":g.btn22.fire();break;
                 }
     }
-    public void sleep(long ms)
-    {
-        for(long i = 0;i < 1000000000;i++);
+  
     
+    public void playSnakeScene()
+    {
+        s.bg_mediaPlayer.play();
+            s.gc = canvas.getGraphicsContext2D();
+
+            snakeScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    KeyCode code = event.getCode();
+                    if (code == KeyCode.RIGHT || code == KeyCode.D) {
+                        if (s.currentDirection != LEFT) {
+                            s.currentDirection = RIGHT;
+                        }
+                    } else if (code == KeyCode.LEFT || code == KeyCode.A) {
+                        if (s.currentDirection != RIGHT) {
+                            s.currentDirection = LEFT;
+                        }
+                    } else if (code == KeyCode.UP || code == KeyCode.W) {
+                        if (s.currentDirection != DOWN) {
+                            s.currentDirection = UP;
+                        }
+                    } else if (code == KeyCode.DOWN || code == KeyCode.S) {
+                        if (s.currentDirection != UP) {
+                            s.currentDirection = DOWN;
+                        }
+                    }
+                }
+            });
+
+            for (int i = 0; i < 3; i++) {
+                s.snakeBody.add(new Point(5, ROWS / 2));
+            }
+            s.snakeHead = s.snakeBody.get(0);
+            s.generateFood();
+
+            timeline = new Timeline(new KeyFrame(Duration.millis(130), e1 -> runGame(s.gc)));
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
+            
+    }
+    
+    private void runGame(GraphicsContext gc) {
+       
+         
+        if (s.gameOver) {
+            gameOver_snake.score.setText(""+s.getScore());
+            s.bg_mediaPlayer.stop();
+            timeline.stop();
+            
+            window.setScene(gameoverSnakeScene);
+            s.stopGame();
+            
+            return;
+            
+        }
+        
+        s.drawBackground(gc);
+        s.drawFood(gc);
+        s.drawSnake(gc);
+        s.drawScore();
+
+        for (int i = s.snakeBody.size() - 1; i >= 1; i--) {
+            s.snakeBody.get(i).x = s.snakeBody.get(i - 1).x;
+            s.snakeBody.get(i).y = s.snakeBody.get(i - 1).y;
+        }
+
+        switch (s.currentDirection) {
+            case RIGHT:
+                s.moveRight();
+                break;
+            case LEFT:
+                s.moveLeft();
+                break;
+            case UP:
+                s.moveUp();
+                break;
+            case DOWN:
+                s.moveDown();
+                break;
+        }
+
+        s.gameOver();
+        s.eatFood();
+        
+        //eat_mediaPlayer.play();
     }
     
     

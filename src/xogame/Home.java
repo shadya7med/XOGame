@@ -1,13 +1,26 @@
 package xogame;
 
+import java.io.File;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class Home extends BorderPane {
 
@@ -22,8 +35,11 @@ public class Home extends BorderPane {
     protected final ImageView imageView;
     protected final AnchorPane anchorPane1;
     protected final ImageView imageView0;
+    protected final Pane pane;
     protected final Label label2;
-
+    protected final    Media aud;
+     protected final    MediaPlayer med;
+    
     public Home() {
 
         flowPane = new FlowPane();
@@ -37,8 +53,10 @@ public class Home extends BorderPane {
         imageView = new ImageView("resources/snake.png");
         anchorPane1 = new AnchorPane();
         imageView0 = new ImageView("resources/checkers.png");
+        pane = new Pane();
         label2 = new Label();
-
+        aud = new Media(new File("src/audio/click.mp3").toURI().toString());
+      med = new MediaPlayer(aud);
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(USE_PREF_SIZE);
         setPrefHeight(400.0);
@@ -50,8 +68,8 @@ public class Home extends BorderPane {
         flowPane.setColumnHalignment(javafx.geometry.HPos.CENTER);
         flowPane.setHgap(40.0);
         flowPane.setNodeOrientation(javafx.geometry.NodeOrientation.LEFT_TO_RIGHT);
-        flowPane.setPrefHeight(110.0);
-        flowPane.setPrefWidth(600.0);
+        flowPane.setPrefHeight(210.0);
+        flowPane.setPrefWidth(900.0);
         flowPane.setPrefWrapLength(20.0);
 
         label.setAlignment(javafx.geometry.Pos.CENTER);
@@ -60,24 +78,24 @@ public class Home extends BorderPane {
         label.setText("XO");
         label.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
         label.setTextFill(javafx.scene.paint.Color.valueOf("#2a3646"));
-        label.setFont(new Font("Arial Bold", 14.0));
+        label.setFont(new Font("Arial Bold", 29.0));
 
         label0.setAlignment(javafx.geometry.Pos.CENTER);
         label0.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
-        label0.setPrefHeight(31.0);
-        label0.setPrefWidth(247.0);
+        label0.setPrefHeight(38.0);
+        label0.setPrefWidth(270.0);
         label0.setText("Snake and Ladder");
         label0.setTextFill(javafx.scene.paint.Color.valueOf("#2a3646"));
-        label0.setFont(new Font("Arial Bold", 15.0));
+        label0.setFont(new Font("Arial Bold", 24.0));
 
         label1.setAlignment(javafx.geometry.Pos.CENTER);
         label1.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
-        label1.setPrefHeight(17.0);
-        label1.setPrefWidth(71.0);
+        label1.setPrefHeight(23.0);
+        label1.setPrefWidth(92.0);
         label1.setText("Checkers");
         label1.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#2a3646"));
-        label1.setFont(new Font("Arial Bold", 15.0));
+        label1.setFont(new Font("Arial Bold", 18.0));
         FlowPane.setMargin(label1, new Insets(0.0));
         setBottom(flowPane);
 
@@ -95,6 +113,7 @@ public class Home extends BorderPane {
         xo_game.setLayoutY(28.0);
         xo_game.setPickOnBounds(true);
         xo_game.setPreserveRatio(true);
+//        xo_game.setImage(new Image(getClass().getResource("../resources/xo.png").toExternalForm()));
 
         anchorPane0.setPrefHeight(200.0);
         anchorPane0.setPrefWidth(200.0);
@@ -105,6 +124,7 @@ public class Home extends BorderPane {
         imageView.setLayoutY(55.0);
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
+//        imageView.setImage(new Image(getClass().getResource("../resources/snake.png").toExternalForm()));
 
         anchorPane1.setPrefHeight(200.0);
         anchorPane1.setPrefWidth(200.0);
@@ -115,16 +135,36 @@ public class Home extends BorderPane {
         imageView0.setLayoutY(62.0);
         imageView0.setPickOnBounds(true);
         imageView0.setPreserveRatio(true);
+        //  imageView0.setImage(new Image(getClass().getResource("../resources/checkers.png").toExternalForm()));
         setCenter(flowPane0);
 
-        BorderPane.setAlignment(label2, javafx.geometry.Pos.CENTER);
-        label2.setPrefHeight(57.0);
-        label2.setPrefWidth(269.0);
-        label2.setText("Entertainment Games");
+        BorderPane.setAlignment(pane, javafx.geometry.Pos.CENTER);
+        pane.setPrefHeight(70.0);
+        pane.setPrefWidth(600.0);
+        pane.setStyle("-fx-background-color: #70b48f;");
+        BorderPane.setMargin(pane, new Insets(0.0, 0.0, 30.0, 0.0));
+
+        label2.setAlignment(javafx.geometry.Pos.CENTER);
+        label2.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
+        label2.setLayoutX(100.0);
+        label2.setLayoutY(5.0);
+        label2.setPrefHeight(46.0);
+        label2.setPrefWidth(412.0);
+        /*--------------------------------------transition games----------------------*/
+        label2.setText("Games");
+//        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(1500), label2);
+//        translateTransition.setFromX(-100);
+//        translateTransition.setToX(120);
+  /*******************************animation****************************/
+ ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(600), label2);
+        scaleTransition.setByX(0.5);
+        scaleTransition .setCycleCount(50);
+
+//      translateTransition.setAutoReverse(false);
+        scaleTransition .play();
         label2.setTextFill(javafx.scene.paint.Color.valueOf("#2a3646"));
-        BorderPane.setMargin(label2, new Insets(40.0, 0.0, 30.0, 0.0));
-        label2.setFont(new Font("Arial Bold", 26.0));
-        setTop(label2);
+        label2.setFont(new Font("Arial Bold", 49.0));
+        setTop(pane);
 
         flowPane.getChildren().add(label);
         flowPane.getChildren().add(label0);
@@ -135,6 +175,25 @@ public class Home extends BorderPane {
         flowPane0.getChildren().add(anchorPane0);
         anchorPane1.getChildren().add(imageView0);
         flowPane0.getChildren().add(anchorPane1);
+        pane.getChildren().add(label2);
 
     }
+
+
+    void rotateImage(EventHandler<ActionEvent> value,Node n) {
+      RotateTransition  rotateTransition = new RotateTransition(Duration.millis(100), n);
+        rotateTransition.setByAngle(25);
+        rotateTransition.setAutoReverse(false);
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(100), n);
+        scaleTransition.setByX(0.3);
+     ParallelTransition   parallelTransition = new ParallelTransition(rotateTransition, scaleTransition);
+        parallelTransition.setCycleCount(1);
+        parallelTransition.setAutoReverse(false);
+        parallelTransition.setOnFinished(value);
+
+        parallelTransition.play();
+        
+    }
+
+
 }
