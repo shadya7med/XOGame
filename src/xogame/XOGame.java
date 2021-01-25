@@ -51,6 +51,7 @@ import static xogame.SnakeLogic.WIDTH;
 public class XOGame extends Application {
     
     Scene homeScene, optionsScene, gameScene, hostGuestScene, snakeScene,gameoverSnakeScene, xScene, winnerScene;
+    Scene replayListScene;
     Stage window;
     DbHandler dbHandler ; 
     GameLogic glc ;
@@ -59,6 +60,7 @@ public class XOGame extends Application {
     Home h ;
     HostGuest hg;
     SnakeLogic s;
+    ReplayList r;
     GameOverSnake gameOver_snake;
     Canvas canvas ;
     Group root;
@@ -79,6 +81,8 @@ public class XOGame extends Application {
     private String mode ;
     private int delayInc ;
     Timeline timeline ;
+    private ArrayList<Integer> replayList ;
+    private Button replayListButton;
     //static boolean replay;
     @Override
     public void init(){
@@ -101,17 +105,19 @@ public class XOGame extends Application {
         hg=new HostGuest();
         x_win = new XWinner();
         w = new Winner();
+        r = new ReplayList();
         gameOver_snake=new GameOverSnake();
         recorded =false ;
         online = false ;
         int replayId = 1;
         mode = "None";
-        delay = new PauseTransition[9];
+        delay = new PauseTransition[10];
         isClicked = true ;
         homeScene = new Scene(h, 600, 520);
         optionsScene = new Scene(o, 600, 520);
         gameScene = new Scene(g, 600, 520);
         hostGuestScene = new Scene(hg,600,520);
+        replayListScene = new Scene(r,600,520);
          xScene = new Scene(x_win, 600, 520);
           winnerScene = new Scene(w, 600, 520);
         gameoverSnakeScene = new Scene(gameOver_snake,600,540);
@@ -286,46 +292,70 @@ public class XOGame extends Application {
         });
         
         o.replay.setOnAction(e ->{
-            //unlock replay mode
-            isReplay = true ;
-            //turn recording off
-            recorded = false ;
-            //terminate current Game
-            //terminateCurrentGame();
-            //load Grid image
-            /*o.scaleButton((k) -> {
-                window.setScene(gameScene);
-
-            }, o.replay);*/ 
-            window.setScene(gameScene);
-            
-            //Create new Replay
-            glc.newReplay(true);
-            //
-            //replay = true;
-            //start DB Conn
             dbHandler.startCon();
-            //get game Turns
-            gameTurns = dbHandler.getGameMoves(replayId);
-            System.out.println("game turns:"+gameTurns.size());
-            //stop DB Conn
+            replayList = dbHandler.getDistinctGameId() ;
             dbHandler.stopCon();
-            //make  the buttons invisible
-            hideAllButtons();
-            //play the selected game
-            delayInc = 1 ;
-            //play the selected game
-            for(String move:gameTurns)
+            if(replayList.size() == 0)
             {
-                delay[delayInc  - 1] = new PauseTransition(Duration.seconds(delayInc));
-                delay[delayInc  - 1].setOnFinished( event -> fireButton(move.substring(1)) );
-                delay[delayInc  - 1].play();
-                delayInc ++ ;
+                System.out.println("size:0");
+                r.replayLabel.setVisible(true);
+            }else{
+                for(int index:replayList)
+                {
+                replayListButton = new Button();
+                replayListButton.setMnemonicParsing(false);
+                replayListButton.setPrefHeight(35.0);
+                replayListButton.setPrefWidth(499.0);
+                replayListButton.setText(String.valueOf(index));
+                replayListButton.setOnAction((event) -> {
+                    //unlock replay mode
+                    isReplay = true ;
+                    //turn recording off
+                    recorded = false ;
+                    //terminate current Game
+                    //terminateCurrentGame();
+                    //load Grid image
+                    /*o.scaleButton((k) -> {
+                    window.setScene(gameScene);
+
+                    }, o.replay);*/ 
+                    window.setScene(gameScene);
+            
+                    //Create new Replay
+                    glc.newReplay(true);
+            
+                    //replay = true;
+                    //start DB Conn
+                    dbHandler.startCon();
+                    //get game Turns
+                    gameTurns = dbHandler.getGameMoves(index);
+                    System.out.println("game turns:"+gameTurns.size());
+                    //stop DB Conn
+                    dbHandler.stopCon();
+                    //make  the buttons invisible
+                    hideAllButtons();
+                    //play the selected game
+                    delayInc = 1 ;
+                    //play the selected game
+                    for(String move:gameTurns)
+                    {
+                        delay[delayInc  - 1] = new PauseTransition(Duration.seconds(delayInc));
+                        delay[delayInc  - 1].setOnFinished( e2 -> fireButton(move.substring(1)) );
+                        delay[delayInc  - 1].play();
+                        delayInc ++ ;
+                    }
+                    //add andimation for result
+                    System.out.println("Ok");
+                    //set mode
+                    mode = "Replay";
+                    
+                });
+                r.vBox.getChildren().add(replayListButton);
+                
+                }
             }
-            //add andimation for result
-            System.out.println("Ok");
-            //set mode
-            mode = "Replay";
+            
+            window.setScene(replayListScene);
         });
         hg.btn_host.setOnAction(e->{
             appNetworkMode = "host";
@@ -702,6 +732,12 @@ public class XOGame extends Application {
             hg.loading_img.setVisible(false);
             hg.waiting_label.setText("");
             
+            window.setScene(optionsScene);
+        });
+        r.btn_back.setOnAction(e->{
+            //reset All values
+            terminateCurrentGame();
+            //set OptionsScene
             window.setScene(optionsScene);
         });
         //-------------------Snake game btn actions --------------------//
