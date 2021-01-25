@@ -80,11 +80,17 @@ public class DbHandler {
         try{
         selectStmnt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
         selectRS = selectStmnt.executeQuery("select distinct gameID from history.games");
+        if(selectRS.next() == false)
+        {
+            System.out.println("Empty Result Set");
+        }
+        else{
+        selectRS.beforeFirst();
         while(selectRS.next())
         {
             gameId.add(selectRS.getInt(1));
         }
-        
+        }
         }catch(SQLException getGameEX)
         {
            getGameEX.printStackTrace();
@@ -148,6 +154,11 @@ public class DbHandler {
               
             selectStmnt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             selectRS = selectStmnt.executeQuery("select playerName, move,result from history.games where gameID ="+gameId);
+            if(selectRS.next() == false)
+            {
+                System.out.println("Empty Result Set");
+            }else{
+            selectRS.beforeFirst();
             while(selectRS.next())
             {
                 gameTurns.add( selectRS.getString(2)) ;
@@ -159,6 +170,7 @@ public class DbHandler {
             //System.out.println(index);
            selectRS.close();
            selectStmnt.close();
+            }
         }catch(SQLException showEx)
         {
             showEx.printStackTrace();

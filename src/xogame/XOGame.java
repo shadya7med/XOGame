@@ -307,6 +307,7 @@ public class XOGame extends Application {
             dbHandler.startCon();
             //get game Turns
             gameTurns = dbHandler.getGameMoves(replayId);
+            System.out.println("game turns:"+gameTurns.size());
             //stop DB Conn
             dbHandler.stopCon();
             //make  the buttons invisible
@@ -832,8 +833,8 @@ public class XOGame extends Application {
                 //animation
                 
                 //go back to options
-                switch (curTurn) {
-                    case 'x':
+                switch (result) {
+                    case "X":
                         /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
@@ -842,7 +843,7 @@ public class XOGame extends Application {
                         */
                         window.setScene(xScene);
                         break;
-                    case 'o':
+                    case "O":
                         /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
@@ -892,8 +893,8 @@ public class XOGame extends Application {
                     case 'o':result="O";break;
                 }*/
                 //animation
-                switch (curTurn) {
-                    case 'x':
+                switch (result) {
+                    case "X":
                         /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
@@ -902,7 +903,7 @@ public class XOGame extends Application {
                         */
                         window.setScene(xScene);
                         break;
-                    case 'o':
+                    case "O":
                         /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
