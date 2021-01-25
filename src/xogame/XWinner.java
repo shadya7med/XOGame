@@ -29,8 +29,8 @@ public class XWinner extends AnchorPane {
         setPrefHeight(400.0);
         setPrefWidth(600.0);
         setStyle("-fx-background-color: #2a3646;");
-        getStyleClass().add("mainFxmlClass");
-        getStylesheets().add("/xogame/winner.css");
+        //getStyleClass().add("mainFxmlClass");
+        //getStylesheets().add("/xogame/winner.css");
 
         label.setAlignment(javafx.geometry.Pos.CENTER);
         label.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);

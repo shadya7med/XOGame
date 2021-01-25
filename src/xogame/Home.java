@@ -37,8 +37,8 @@ public class Home extends BorderPane {
     protected final ImageView imageView0;
     protected final Pane pane;
     protected final Label label2;
-    protected final    Media aud;
-     protected final    MediaPlayer med;
+    //protected final    Media aud;
+    // protected final    MediaPlayer med;
     
     public Home() {
 
@@ -55,8 +55,8 @@ public class Home extends BorderPane {
         imageView0 = new ImageView("resources/checkers.png");
         pane = new Pane();
         label2 = new Label();
-        aud = new Media(new File("src/audio/click.mp3").toURI().toString());
-      med = new MediaPlayer(aud);
+        //aud = new Media(new File("src/audio/click.mp3").toURI().toString());
+        //med = new MediaPlayer(aud);
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(USE_PREF_SIZE);
         setPrefHeight(400.0);

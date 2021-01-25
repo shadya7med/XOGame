@@ -72,9 +72,9 @@ public class Game extends AnchorPane {
         label0 = new Label();
         imageView0 = new ImageView();
         label1 = new Label();
-        imageView1 = new ImageView();
+        imageView1 = new ImageView("resources/x.png");
         imageView2 = new ImageView();
-        imageView3 = new ImageView();
+        imageView3 = new ImageView("resources/o.png");
         label2 = new Label();
 
         setId("AnchorPane");
@@ -240,7 +240,7 @@ public class Game extends AnchorPane {
         imageView1.setFitWidth(49.0);
         imageView1.setLayoutX(37.0);
         imageView1.setLayoutY(4.0);
-        imageView1.setImage(new Image(getClass().getResource("../resources/x.png").toExternalForm()));
+        //imageView1.setImage(new Image(getClass().getResource("resources/x.png").toExternalForm()));
         
         imageView2.setFitHeight(43.0);
         imageView2.setFitWidth(72.0);
@@ -253,7 +253,7 @@ public class Game extends AnchorPane {
         imageView3.setFitWidth(49.0);
         imageView3.setLayoutX(530.0);
         imageView3.setLayoutY(4.0);
-        imageView3.setImage(new Image(getClass().getResource("../resources/o.png").toExternalForm()));
+        //imageView3.setImage(new Image(getClass().getResource("resources/o.png").toExternalForm()));
  label2.setLayoutX(450.0);
         label2.setLayoutY(8.0);
         label2.setPrefHeight(35.0);

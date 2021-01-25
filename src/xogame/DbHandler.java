@@ -18,6 +18,14 @@ public class DbHandler {
     private PreparedStatement insertStmnt ;
     private Statement selectStmnt ;
     private ResultSet selectRS ;
+    public void loadSQLDriver(){
+        try{
+        DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+        }catch(SQLException driverRegisterEx)
+        {
+            driverRegisterEx.printStackTrace();
+        }
+    }
     public void startCon()
     {
         try{

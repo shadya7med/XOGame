@@ -23,8 +23,8 @@ public class Winner extends AnchorPane {
     protected final Button btn_back;
      protected final Button btn_new;
     protected final Blend blend;
-  protected final Media aud;
-  protected final MediaPlayer med;
+  //protected final Media aud;
+  //protected final MediaPlayer med;
     public Winner() {
 
         circle = new Circle();
@@ -35,15 +35,15 @@ public class Winner extends AnchorPane {
        btn_new=new Button();
         blend = new Blend();
 
-  aud = new Media(new File("src/audio/win.mp3").toURI().toString());
+  //aud = new Media(new File("src/audio/win.mp3").toURI().toString());
 
-      med = new MediaPlayer(aud);
+      //med = new MediaPlayer(aud);
         setId("AnchorPane");
         setPrefHeight(400.0);
         setPrefWidth(600.0);
         setStyle("-fx-background-color: #2a3646;");
-        getStyleClass().add("mainFxmlClass");
-        getStylesheets().add("/xogame/winner.css");
+        //getStyleClass().add("mainFxmlClass");
+        //getStylesheets().add("/xogame/winner.css");
 
         circle.setFill(javafx.scene.paint.Color.valueOf("#6fb08c00"));
         circle.setLayoutX(520.0);

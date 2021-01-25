@@ -83,7 +83,7 @@ public class XOGame extends Application {
     @Override
     public void init(){
         dbHandler = new DbHandler();
-        
+        dbHandler.loadSQLDriver();
         
         glc = new GameLogic(); 
         conHandler = new ConnectionHandler();
@@ -182,7 +182,7 @@ public class XOGame extends Application {
             @Override
             public void handle(MouseEvent e) {
                 h.rotateImage((k) -> {
-                    h.med.play();
+                    //h.med.play();
                     window.setScene(snakeScene);
                     
                 },h.imageView);
@@ -522,7 +522,7 @@ public class XOGame extends Application {
         //-------------------new Buttons Actions--------------------//
         //X Wins
         x_win.btn_new.setOnAction(e->{
-            w.med.stop();
+           // w.med.stop();
            //get flags State
            String temp = mode ;
            boolean tempRecorded = recorded;
@@ -540,11 +540,11 @@ public class XOGame extends Application {
                case "Replay":o.replay.fire();break;    
                    
            }
-           w.med.stop();
+           //w.med.stop();
         });
         //O Wins
         w.btn_new.setOnAction(e->{
-            w.med.stop();
+           // w.med.stop();
            //get flags State
            String temp = mode ;
            boolean tempRecorded = recorded;
@@ -571,7 +571,7 @@ public class XOGame extends Application {
             window.setScene(homeScene);
         });
          x_win.btn_back.setOnAction((ActionEvent e) -> {
-            w.med.stop();
+            //w.med.stop();
             /*if (online) {
                 switch (appNetworkMode) {
                     case "host":
@@ -598,11 +598,11 @@ public class XOGame extends Application {
             terminateCurrentGame();
             window.setScene(optionsScene);
              System.out.println("X win back pressed");
-            w.med.stop();
+           // w.med.stop();
 
         });
         w.btn_back.setOnAction((ActionEvent e) -> {
-            w.med.stop();
+           // w.med.stop();
             /*if (online) {
                 switch (appNetworkMode) {
                     case "host":
@@ -834,17 +834,21 @@ public class XOGame extends Application {
                 //go back to options
                 switch (curTurn) {
                     case 'x':
+                        /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
                         });
                         w.med.play();
+                        */
                         window.setScene(xScene);
                         break;
                     case 'o':
+                        /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
                         });
                         w.med.play();
+                        */
                         window.setScene(winnerScene);
                         break;
                 }
@@ -890,17 +894,21 @@ public class XOGame extends Application {
                 //animation
                 switch (curTurn) {
                     case 'x':
+                        /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
                         });
                         w.med.play();
+                        */
                         window.setScene(xScene);
                         break;
                     case 'o':
+                        /*
                         w.med.setOnEndOfMedia(() -> {
                             w.med.seek(Duration.ZERO);
                         });
                         w.med.play();
+                        */
                         window.setScene(winnerScene);
                         break;
                 }
@@ -1035,7 +1043,7 @@ public class XOGame extends Application {
     
     public void playSnakeScene()
     {
-        s.bg_mediaPlayer.play();
+        //s.bg_mediaPlayer.play();
             s.gc = canvas.getGraphicsContext2D();
 
             snakeScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -1079,7 +1087,7 @@ public class XOGame extends Application {
          
         if (s.gameOver) {
             gameOver_snake.score.setText(""+s.getScore());
-            s.bg_mediaPlayer.stop();
+            //s.bg_mediaPlayer.stop();
             timeline.stop();
             
             window.setScene(gameoverSnakeScene);

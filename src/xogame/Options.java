@@ -174,7 +174,7 @@ public class Options extends AnchorPane {
         scaleTransition.setByX(0.01);
         parallelTransition = new ParallelTransition(rotateTransition, scaleTransition);
 
-        h.med.play();
+        //h.med.play();
         parallelTransition.setOnFinished(value);
         parallelTransition.play();
     }

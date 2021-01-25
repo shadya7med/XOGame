@@ -46,13 +46,13 @@ public class SnakeLogic {
     protected boolean gameOver;
     protected int currentDirection;
     private int gameScore = 0;
+    
+    /*
     private String bgSong= "src/audio/Snake.mp3";
-    //private String eatingSound= "src/audio/Eating.mp3";
-    Media bg_media = new Media(new File(bgSong).toURI().toString());  
-    //Media eat_media = new Media(new File(eatingSound).toURI().toString());      
+    Media bg_media = new Media(new File(bgSong).toURI().toString());       
     //Instantiating MediaPlayer class   
     MediaPlayer bg_mediaPlayer = new MediaPlayer(bg_media);
-    //MediaPlayer eat_mediaPlayer = new MediaPlayer(eat_media);
+    */
     
     public void drawBackground(GraphicsContext gc) {
         for (int i = 0; i <=ROWS; i++) {
