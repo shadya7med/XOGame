@@ -303,8 +303,12 @@ public class XOGame extends Application {
             glc.newReplay(true);
             //
             //replay = true;
+            //start DB Conn
+            dbHandler.startCon();
             //get game Turns
             gameTurns = dbHandler.getGameMoves(replayId);
+            //stop DB Conn
+            dbHandler.stopCon();
             //make  the buttons invisible
             hideAllButtons();
             //play the selected game
@@ -518,6 +522,29 @@ public class XOGame extends Application {
         //-------------------new Buttons Actions--------------------//
         //X Wins
         x_win.btn_new.setOnAction(e->{
+            w.med.stop();
+           //get flags State
+           String temp = mode ;
+           boolean tempRecorded = recorded;
+           //restart the game
+           terminateCurrentGame();
+           //set flags State
+           recorded = tempRecorded ;
+           //fire corresponding mode
+           switch(temp)
+           {
+               case "SinglePlayer":o.btn_oneplayer.fire();break;
+               case "TwoPlayerOffline":o.btn_offline.fire();break;
+               case "TwoPlayerHost":hg.btn_host.fire();break;
+               case "TwoPlayerGuest":hg.btn_guest.fire();break;
+               case "Replay":o.replay.fire();break;    
+                   
+           }
+           w.med.stop();
+        });
+        //O Wins
+        w.btn_new.setOnAction(e->{
+            w.med.stop();
            //get flags State
            String temp = mode ;
            boolean tempRecorded = recorded;
@@ -536,27 +563,6 @@ public class XOGame extends Application {
                    
            }
            
-        });
-        //O Wins
-        w.btn_new.setOnAction(e->{
-           //get flags State
-           String temp = mode ;
-           boolean tempRecorded = recorded;
-           //restart the game
-           terminateCurrentGame();
-           //set flags State
-           recorded = tempRecorded ;
-           //fire corresponding mode
-           switch(temp)
-           {
-               case "SinglePlayer":o.btn_oneplayer.fire();break;
-               case "TwoPlayerOffline":o.btn_offline.fire();break;
-               case "TwoPlayerHost":hg.btn_host.fire();break;
-               case "TwoPlayerGuest":hg.btn_guest.fire();break;
-               case "Replay":o.replay.fire();break;    
-                   
-           }
-
         });
         //TIE
         //-------------------back Buttons Actions--------------------//

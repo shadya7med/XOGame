@@ -65,6 +65,32 @@ public class DbHandler {
         }
         return gameId ;
     }
+    public ArrayList<Integer> getDistinctGameId()
+    {
+        ArrayList<Integer> gameId = new ArrayList<Integer>();
+        
+        try{
+        selectStmnt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+        selectRS = selectStmnt.executeQuery("select distinct gameID from history.games");
+        while(selectRS.next())
+        {
+            gameId.add(selectRS.getInt(1));
+        }
+        
+        }catch(SQLException getGameEX)
+        {
+           getGameEX.printStackTrace();
+        }finally{
+            try{
+                selectRS.close();
+                selectStmnt.close();
+            }catch(SQLException closeEx)
+            {
+                closeEx.printStackTrace();
+            }
+        }
+        return gameId ;
+    }
     public void startInsert()
     {
         try{
