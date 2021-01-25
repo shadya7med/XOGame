@@ -83,7 +83,7 @@ public class XOGame extends Application {
     @Override
     public void init(){
         dbHandler = new DbHandler();
-        dbHandler.startCon();
+        
         
         glc = new GameLogic(); 
         conHandler = new ConnectionHandler();
@@ -216,6 +216,7 @@ public class XOGame extends Application {
             //terminateCurrentGame();
             if(recorded)
             {
+                dbHandler.startCon();
                 //get the Starting gameId
                 gameId = dbHandler.getGameId();
                 //start Insert Statement
@@ -262,6 +263,7 @@ public class XOGame extends Application {
             //terminateCurrentGame();
             if(recorded)
             {
+                dbHandler.startCon();
                 //get the Starting gameId
                 gameId = dbHandler.getGameId();
                 //start Insert Statement
@@ -322,6 +324,13 @@ public class XOGame extends Application {
         });
         hg.btn_host.setOnAction(e->{
             appNetworkMode = "host";
+            window.setScene(hostGuestScene);
+            //set Buttons Visibility
+            hg.btn_guest.setVisible(false);
+            hg.btn_host.setVisible(false);
+            //set Loading image and label visible
+            hg.loading_img.setVisible(true);
+            hg.waiting_label.setText("Waiting for Guest");
             serverInitTh = new Thread(){ 
             @Override
                 public void run(){
@@ -334,6 +343,7 @@ public class XOGame extends Application {
                     //terminateCurrentGame();
                     if(recorded)
                     {
+                     dbHandler.startCon();
                     //get the Starting gameId
                     gameId = dbHandler.getGameId();
                     //start Insert Statement
@@ -406,6 +416,13 @@ public class XOGame extends Application {
         });
         hg.btn_guest.setOnAction(e->{
             appNetworkMode ="guest";
+            window.setScene(hostGuestScene);
+            //setting buttons visibility
+            hg.btn_guest.setVisible(false);
+            hg.btn_host.setVisible(false);
+            //set Loading image and label visible
+            hg.loading_img.setVisible(true);
+            hg.waiting_label.setText("Waiting for Host");
             clientInitTh = new Thread(){ 
             @Override
                 public void run(){
@@ -418,6 +435,7 @@ public class XOGame extends Application {
                     //terminateCurrentGame();
                     if(recorded)
                     {
+                     dbHandler.startCon();
                     //get the Starting gameId
                     gameId = dbHandler.getGameId();
                     //start Insert Statement
@@ -500,8 +518,14 @@ public class XOGame extends Application {
         //-------------------new Buttons Actions--------------------//
         //X Wins
         x_win.btn_new.setOnAction(e->{
+           //get flags State
            String temp = mode ;
+           boolean tempRecorded = recorded;
+           //restart the game
            terminateCurrentGame();
+           //set flags State
+           recorded = tempRecorded ;
+           //fire corresponding mode
            switch(temp)
            {
                case "SinglePlayer":o.btn_oneplayer.fire();break;
@@ -515,8 +539,14 @@ public class XOGame extends Application {
         });
         //O Wins
         w.btn_new.setOnAction(e->{
-            String temp = mode ;
+           //get flags State
+           String temp = mode ;
+           boolean tempRecorded = recorded;
+           //restart the game
            terminateCurrentGame();
+           //set flags State
+           recorded = tempRecorded ;
+           //fire corresponding mode
            switch(temp)
            {
                case "SinglePlayer":o.btn_oneplayer.fire();break;
@@ -657,7 +687,14 @@ public class XOGame extends Application {
             conHandler.stopServer();
                
             conHandler.stopClient();
-                
+            
+            //set Buttons Visibility 
+            hg.btn_guest.setVisible(true);
+            hg.btn_host.setVisible(true);
+            //hide Loading image and label
+            hg.loading_img.setVisible(false);
+            hg.waiting_label.setText("");
+            
             window.setScene(optionsScene);
         });
         //-------------------Snake game btn actions --------------------//
@@ -723,10 +760,10 @@ public class XOGame extends Application {
                     break;
             }
         }   
-        if(recorded)
+        /*if(recorded)
         {
             dbHandler.stopCon();
-        }
+        }*/
         System.out.println("stop called");
     }
     
@@ -905,14 +942,14 @@ public class XOGame extends Application {
                     conHandler.stopClient();
                     if(clientTh != null)
                     {
-                      System.out.println("clientStopping");
+                      //System.out.println("clientStopping");
                      clientTh.stop();   
-                     System.out.println("clientStopped");
+                     //System.out.println("clientStopped");
                     }
                     if(clientInitTh != null)
                     {
                     clientInitTh.stop();
-                        System.out.println("clientInitStopped");
+                        //System.out.println("clientInitStopped");
                     }
                     
                     break;
@@ -927,11 +964,11 @@ public class XOGame extends Application {
                 }
             }
         }
-        System.out.println("inTer");
+        //System.out.println("inTer");
         try{
-            System.out.println("inTer before Start");
+            //System.out.println("inTer before Start");
             start(window);
-            System.out.println("inTer after Start");
+            //System.out.println("inTer after Start");
             }catch(Exception restart)
             {
                 restart.printStackTrace();
@@ -943,9 +980,11 @@ public class XOGame extends Application {
             if(dbHandler.getInsertState())
             {
                 dbHandler.stopInsert();
+                dbHandler.stopCon();
             }
+            
         }
-        System.out.println("terminate done");
+        //System.out.println("terminate done");
     }
     private void hideAllButtons()
     {
