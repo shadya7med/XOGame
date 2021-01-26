@@ -240,10 +240,10 @@ public class XOGame extends Application {
             }, o.btn_oneplayer);*/
         window.setScene(gameScene);
 //               
-                  g.label1.setText("Player");
+                g.label1.setText("Player");
                 
                 g.label2.setText("Robot");
-                 g.label2.setLayoutX(470);
+                g.label2.setLayoutX(470);
             
         //Create 2-Player Offline Game
         glc.newGame(false);
@@ -300,7 +300,7 @@ public class XOGame extends Application {
             dbHandler.stopCon();
             if(replayList.size() == 0)
             {
-                System.out.println("size:0");
+                //System.out.println("size:0");
                 r.replayLabel.setVisible(true);
             }else{
                 for(int index:replayList)
@@ -332,7 +332,7 @@ public class XOGame extends Application {
                     dbHandler.startCon();
                     //get game Turns
                     gameTurns = dbHandler.getGameMoves(index);
-                    System.out.println("game turns:"+gameTurns.size());
+                    //System.out.println("game turns:"+gameTurns.size());
                     //stop DB Conn
                     dbHandler.stopCon();
                     //make  the buttons invisible
@@ -348,7 +348,7 @@ public class XOGame extends Application {
                         delayInc ++ ;
                     }
                     //add andimation for result
-                    System.out.println("Ok");
+                    //System.out.println("Ok");
                     //set mode
                     mode = "Replay";
                     
@@ -419,7 +419,7 @@ public class XOGame extends Application {
                         if(serverInput!=null){
                         if(serverInput.equals("close"))
                          {
-                         System.out.println("Client closed");
+                         //System.out.println("Client closed");
                          Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
@@ -430,7 +430,7 @@ public class XOGame extends Application {
                          Platform.runLater(new Runnable() {
                          @Override
                         public void run() {
-                             System.out.println(serverInput);
+                             //System.out.println(serverInput);
                              isClicked = false ;
                          //fire button corresponding to client move   
                          fireButton(serverInput);
@@ -516,7 +516,7 @@ public class XOGame extends Application {
                         if(clientInput!=null){
                         if(clientInput.equals("close"))
                          {
-                         System.out.println("Server closed");
+                         //System.out.println("Server closed");
                          Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
@@ -528,7 +528,7 @@ public class XOGame extends Application {
                             Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                System.out.println(clientInput);
+                                //System.out.println(clientInput);
                             isClicked = false ;
                             //fire button corresponding to server move   
                             fireButton(clientInput);
@@ -628,7 +628,7 @@ public class XOGame extends Application {
             //terminate current Game
             terminateCurrentGame();
             window.setScene(optionsScene);
-             System.out.println("X win back pressed");
+             //System.out.println("X win back pressed");
            // w.med.stop();
 
         });
@@ -650,20 +650,20 @@ public class XOGame extends Application {
             terminateCurrentGame();
             //
             window.setScene(optionsScene);
-            System.out.println("game back button pressed");
+            //System.out.println("game back button pressed");
         });
         hg.btn_back.setOnAction(e ->{
             if(serverInitTh != null)
                 {
-                System.out.println("server intit stopping");
+                //System.out.println("server intit stopping");
                 serverInitTh.stop();
-                System.out.println("server intit stopped");
+                //System.out.println("server intit stopped");
                 }
                 if(serverTh != null)
                 {
-                System.out.println("client read stopping");
+                //System.out.println("client read stopping");
                 serverTh.stop();  
-                System.out.println("client read stopped");
+                //System.out.println("client read stopped");
                 }
                     
             if(clientInitTh != null)
@@ -727,12 +727,12 @@ public class XOGame extends Application {
         if(serverInitTh != null)
             {
             serverInitTh.stop();
-            System.out.println("server stopped 1");
+            //System.out.println("server stopped 1");
             }
         if(serverTh != null)
             {
             serverTh.stop();
-            System.out.println("server stopped 2");
+            //System.out.println("server stopped 2");
             }
                     
         if(clientInitTh != null)
@@ -761,7 +761,7 @@ public class XOGame extends Application {
         {
             dbHandler.stopCon();
         }*/
-        System.out.println("stop called");
+        //System.out.println("stop called");
     }
     
     public void turnPlay(int i,int j)
@@ -870,7 +870,7 @@ public class XOGame extends Application {
             {   int col = Integer.parseInt(nextTurn.substring(0,1));
                 int row = Integer.parseInt(nextTurn.substring(1));
                 move = "o"+col+row;
-                System.out.println("col:"+col+",row:"+row);
+                //System.out.println("col:"+col+",row:"+row);
                 ImageView o_img = new ImageView(new Image("resources/o.png"));
                 o_img.setFitHeight(120);
                 o_img.setFitWidth(120);
@@ -930,7 +930,7 @@ public class XOGame extends Application {
             
             /**/
             
-            System.out.println(glc);
+            //System.out.println(glc);
     }
     public void terminateCurrentGame()
     {

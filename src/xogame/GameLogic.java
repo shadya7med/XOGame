@@ -120,7 +120,7 @@ public class GameLogic {
         //check if there's a winner or tie ?
         String winnerMessage = checkGameWinner(grid);
         if (!winnerMessage.equals("None")) {
-            System.out.println(winnerMessage);
+            //System.out.println(winnerMessage);
             //newGame(false);
             return true;
         }

@@ -39,7 +39,7 @@ public class ConnectionHandler {
             dos = new PrintStream(socket.getOutputStream());
             serverInit = true ;
             serverTh.start();
-            System.out.println("Connected");
+            //System.out.println("Connected");
             }catch(IOException acceptEx)
             {
                 acceptEx.printStackTrace();
@@ -62,7 +62,7 @@ public class ConnectionHandler {
             dis = new DataInputStream(socket.getInputStream()) ;
             dos = new PrintStream(socket.getOutputStream());
             serverInit = true ;
-            System.out.println("Connected");
+            //System.out.println("Connected");
             }catch(IOException acceptEx)
             {
                 acceptEx.printStackTrace();
@@ -104,7 +104,7 @@ public class ConnectionHandler {
                     }catch(IOException clientEx)
                     {
                         //waiting for server 
-                        System.out.println("waiting for Host");
+                        //System.out.println("waiting for Host");
                         try{
 
                             Thread.sleep(100);
@@ -146,7 +146,7 @@ public class ConnectionHandler {
                     }catch(IOException clientEx)
                     {
                         //waiting for server 
-                        System.out.println("waiting for Host");
+                        //System.out.println("waiting for Host");
                         try{
 
                             Thread.sleep(100);
@@ -179,10 +179,10 @@ public class ConnectionHandler {
                 if(input!=null){
                 if(input.equals("close"))
                 {
-                    System.out.println("Client closed");
+                    //System.out.println("Client closed");
                     Platform.exit();
                 }else{
-                System.out.println(input);
+                //System.out.println(input);
                 }
                 }}catch(IOException readEx)
                 {
@@ -214,17 +214,18 @@ public class ConnectionHandler {
         clientTh = new Thread(() -> {
             while(true) {
                 try {
-                    System.out.println("runClient");
+                   // System.out.println("runClient");
                     input = dis.readLine();
                     
                     if(input!=null){
                     if(input.equals("close"))
                     {
-                        System.out.println("Server closed");
+                        //System.out.println("Server closed");
                         Platform.exit();
                     }else{
 
-                        System.out.println(input);}
+                        //System.out.println(input);
+                    }
                     } }catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -238,7 +239,7 @@ public class ConnectionHandler {
         String input = "";
             
                 try {
-                    System.out.println("runClient");
+                    //System.out.println("runClient");
                     input = dis.readLine();
                     }catch (IOException ex) {
                         ex.printStackTrace();
@@ -259,7 +260,7 @@ public class ConnectionHandler {
         if(dos != null){
             dos.println("close");
             dos.close();
-            System.out.println("server sent close");
+            //System.out.println("server sent close");
         }
         try{
         if(dis != null)
@@ -277,7 +278,7 @@ public class ConnectionHandler {
         {
             closeEx.printStackTrace();
         }
-        System.out.println("serverClient done");
+        //System.out.println("serverClient done");
         
     }
     
@@ -294,7 +295,7 @@ public class ConnectionHandler {
             if(dos != null){
                 dos.println("close");
                 dos.close();
-                System.out.println("client sent close");
+                //System.out.println("client sent close");
             }
         try {
             if(dis != null)
@@ -309,7 +310,7 @@ public class ConnectionHandler {
         {
             closeEx.printStackTrace();
         }
-        System.out.println("stopClient done");
+        //System.out.println("stopClient done");
     }
     public boolean getServerInit()
     {
