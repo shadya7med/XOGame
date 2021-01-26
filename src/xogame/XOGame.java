@@ -51,7 +51,7 @@ import static xogame.SnakeLogic.WIDTH;
 public class XOGame extends Application {
     
     Scene homeScene, optionsScene, gameScene, hostGuestScene, snakeScene,gameoverSnakeScene, xScene, winnerScene;
-    Scene replayListScene;
+    Scene replayListScene,tieScene;
     Stage window;
     DbHandler dbHandler ; 
     GameLogic glc ;
@@ -66,6 +66,7 @@ public class XOGame extends Application {
     Group root;
        XWinner x_win;
        Winner w;
+       xoGameOver tie ;
     private int gameId; 
     private boolean recorded ;
     private boolean online ;
@@ -83,6 +84,7 @@ public class XOGame extends Application {
     Timeline timeline ;
     private ArrayList<Integer> replayList ;
     private Button replayListButton;
+    
     //static boolean replay;
     @Override
     public void init(){
@@ -105,11 +107,11 @@ public class XOGame extends Application {
         hg=new HostGuest();
         x_win = new XWinner();
         w = new Winner();
+        tie = new xoGameOver();
         r = new ReplayList();
         gameOver_snake=new GameOverSnake();
         recorded =false ;
         online = false ;
-        int replayId = 1;
         mode = "None";
         delay = new PauseTransition[10];
         isClicked = true ;
@@ -120,6 +122,7 @@ public class XOGame extends Application {
         replayListScene = new Scene(r,600,520);
          xScene = new Scene(x_win, 600, 520);
           winnerScene = new Scene(w, 600, 520);
+          tieScene = new Scene(tie,600,520);
         gameoverSnakeScene = new Scene(gameOver_snake,600,540);
         
         //snakeScene
@@ -596,35 +599,32 @@ public class XOGame extends Application {
            
         });
         //TIE
+        tie.btn_newGame.setOnAction(e->{
+          //get flags State
+           String temp = mode ;
+           boolean tempRecorded = recorded;
+           //restart the game
+           terminateCurrentGame();
+           //set flags State
+           recorded = tempRecorded ;
+           //fire corresponding mode
+           switch(temp)
+           {
+               case "SinglePlayer":o.btn_oneplayer.fire();break;
+               case "TwoPlayerOffline":o.btn_offline.fire();break;
+               case "TwoPlayerHost":hg.btn_host.fire();break;
+               case "TwoPlayerGuest":hg.btn_guest.fire();break;
+               case "Replay":o.replay.fire();break;    
+                   
+           }
+             
+        });
         //-------------------back Buttons Actions--------------------//
         o.btn_back.setOnAction((ActionEvent e) -> {
             
             window.setScene(homeScene);
         });
-         x_win.btn_back.setOnAction((ActionEvent e) -> {
-            //w.med.stop();
-            /*if (online) {
-                switch (appNetworkMode) {
-                    case "host":
-                        conHandler.stopServer();
-                        if (serverInitTh != null) {
-                            serverInitTh.stop();
-                        }
-                        if (serverTh != null) {
-                            serverTh.stop();
-                        }
-                        break;
-                    case "guest":
-                        conHandler.stopClient();
-                        if (clientInitTh != null) {
-                            clientInitTh.stop();
-                        }
-                        if (clientTh != null) {
-                            clientTh.stop();
-                        }
-                        break;
-                }
-            }*/
+         x_win.btn_back.setOnAction((ActionEvent e) -> { 
             //terminate current Game
             terminateCurrentGame();
             window.setScene(optionsScene);
@@ -633,65 +633,19 @@ public class XOGame extends Application {
 
         });
         w.btn_back.setOnAction((ActionEvent e) -> {
-           // w.med.stop();
-            /*if (online) {
-                switch (appNetworkMode) {
-                    case "host":
-                        conHandler.stopServer();
-                        if (serverInitTh != null) {
-                            serverInitTh.stop();
-                        }
-                        if (serverTh != null) {
-                            serverTh.stop();
-                        }
-                        break;
-                    case "guest":
-                        conHandler.stopClient();
-                        if (clientInitTh != null) {
-                            clientInitTh.stop();
-                        }
-                        if (clientTh != null) {
-                            clientTh.stop();
-                        }
-                        break;
-                }
-            }*/
             //terminate current Game
             terminateCurrentGame();
 
             window.setScene(optionsScene);
 
         });
+        tie.btn_back.setOnAction(e->{
+            //terminate current Game
+            terminateCurrentGame();
+
+            window.setScene(optionsScene);
+        });
         g.btn_back.setOnAction((ActionEvent e) -> {
-            //
-            /*if(online)
-            {
-                switch(appNetworkMode)
-                {
-                case "host":
-                    conHandler.stopServer();
-                    if(serverInitTh != null)
-                    {
-                    serverInitTh.stop();
-                    }
-                    if(serverTh != null)
-                    {
-                     serverTh.stop();       
-                    }
-                    break;
-                case "guest":
-                    conHandler.stopClient();
-                    if(clientInitTh != null)
-                    {
-                    clientInitTh.stop();
-                    }
-                    if(clientTh != null)
-                    {
-                     clientTh.stop();       
-                    }
-                    break;
-                }
-            }*/
             //terminate current Game
             terminateCurrentGame();
             //
@@ -888,6 +842,9 @@ public class XOGame extends Application {
                         */
                         window.setScene(winnerScene);
                         break;
+                    case"T":
+                        window.setScene(tieScene);
+                        break;
                 }
            // System.out.println("Game Ended\n"+curTurn +"Won !!");
             if(!isReplay){
@@ -947,6 +904,9 @@ public class XOGame extends Application {
                         w.med.play();
                         */
                         window.setScene(winnerScene);
+                        break;
+                    case"T":
+                        window.setScene(tieScene);
                         break;
                 }
                 //go back to options
